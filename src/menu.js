@@ -6,8 +6,8 @@ Pebble.addEventListener("ready",
 
 Pebble.addEventListener("showConfiguration",
   function(e) {
-    //Load the remote config page
-    Pebble.openURL("https://dl.dropboxusercontent.com/u/48136772/Pebble/Dimension-Config.html");
+    // Load the remote config page
+    Pebble.openURL("https://public.richinfante.com/Dimension-Config.html");
   }
 );
 
