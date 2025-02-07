@@ -54,6 +54,12 @@
       <span id="thickness_display">2</span>
     </div>
 
+    <div class="input-container">
+      <div class="label">Digit Margin</div>
+      <input type="range" min="4" max="15" value="15" id="digit_margin" oninput="document.getElementById('digit_margin_display').innerText = this.value">
+      <span id="digit_margin_display">15</span>
+    </div>
+
     <div class="target container" id="time">
       <div class="input-container">
         <div class="label">Clock Color</div>
@@ -97,6 +103,7 @@
       var foreground = document.getElementById("foreground").value;
       var background = document.getElementById("background").value;
       var thickness = document.getElementById("thickness").value;
+      var digit_margin = document.getElementById("digit_margin").value;
 
       if(window.location.hash == "#classic"){
         if(document.getElementById("invert").checked){
@@ -117,11 +124,13 @@
       localStorage.setItem("foreground", foreground);
       localStorage.setItem("background" , background);
       localStorage.setItem("thickness", thickness);
+      localStorage.setItem("digit_margin", digit_margin);
 
       var options = {
         "KEY_FOREGROUND" : parseInt("0x" + foreground),
         "KEY_BACKGROUND" : parseInt("0x" + background),
-        "KEY_THICKNESS" : parseInt(thickness)
+        "KEY_THICKNESS" : parseInt(thickness),
+        "KEY_DIGIT_MARGIN" : parseInt(digit_margin)
       }
 
       return options;
@@ -151,6 +160,7 @@
       document.getElementById("background").value = localStorage.getItem("background") ?? "000000";
       document.getElementById("thickness").value = localStorage.getItem("thickness") ?? 15;
       document.getElementById('thickness_display').innerText = document.getElementById("thickness").value;
+      document.getElementById("digit_margin_display").value = localStorage.getItem("digit_margin") ?? 15;
     });
   </script>
 </body>

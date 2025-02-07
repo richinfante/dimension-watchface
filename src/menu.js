@@ -7,7 +7,7 @@ Pebble.addEventListener("ready",
 Pebble.addEventListener("showConfiguration",
   function(e) {
     // Load the remote config page
-    Pebble.openURL("https://public.richinfante.com/Dimension-Config.html");
+    Pebble.openURL("https://public.richinfante.com/pebble-dimension-config-v2.html");
   }
 );
 
@@ -21,7 +21,8 @@ Pebble.addEventListener("webviewclosed",
    {
    "KEY_FOREGROUND" : configuration.KEY_FOREGROUND,
    "KEY_BACKGROUND" : configuration.KEY_BACKGROUND,
-   "KEY_THICKNESS" : configuration.KEY_THICKNESS
+   "KEY_THICKNESS" : configuration.KEY_THICKNESS,
+   "KEY_DIGIT_MARGIN" : configuration.KEY_DIGIT_MARGIN,
    },
       function(e) {
         console.log("Sending settings data...");
