@@ -49,18 +49,16 @@
   <h1>Dimension Configuration</h1>
   <div class="container">
     <div class="input-container">
-      <div class="label">Line thickness</div>
+      <div class="label">Line thickness (<span id="thickness_display">2</span>)</div>
       <input type="range" min="1" max="15" value="2" id="thickness" oninput="document.getElementById('thickness_display').innerText = this.value">
-      <span id="thickness_display">2</span>
     </div>
 
     <div class="input-container">
-      <div class="label">Digit Margin</div>
+      <div class="label">Digit Margin (<span id="digit_margin_display">15</span>)</div>
       <input type="range" min="4" max="15" value="15" id="digit_margin" oninput="document.getElementById('digit_margin_display').innerText = this.value">
-      <span id="digit_margin_display">15</span>
     </div>
 
-    <div class="target container" id="time">
+    <div class="container target" id="time">
       <div class="input-container">
         <div class="label">Clock Color</div>
         <select id="foreground"></select>
@@ -73,7 +71,7 @@
 
       <a href="#classic">Using Classic Pebble?</a>
     </div>
-    <div class="target container" id="classic">
+    <div class="container target" id="classic">
       <p>
         Invert Display (to black on white)
         <input type="checkbox" id="invert">
