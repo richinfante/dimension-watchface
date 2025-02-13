@@ -5,7 +5,9 @@
         "KEY_THICKNESS": 3,
         "KEY_USE_SECONDS": 4,
         "KEY_STORAGE_VERSION": 5,
-        "KEY_DIGIT_MARGIN": 6
+        "KEY_DIGIT_MARGIN": 6,
+        "KEY_CORNER_RADIUS": 7,
+        "KEY_DIGIT_SPACING": 8
     },
     "capabilities": [
         "configurable"
@@ -27,7 +29,10 @@
     "shortName": "Dimension",
     "targetPlatforms": [
         "aplite",
-        "basalt"
+        "basalt",
+        "chalk",
+        "diorite",
+        "emery"
     ],
     "uuid": "3c36a20f-b65d-47b6-8d55-b40fddaed352",
     "versionLabel": "1.5",
