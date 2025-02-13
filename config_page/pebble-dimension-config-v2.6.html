@@ -54,8 +54,18 @@
     </div>
 
     <div class="input-container">
-      <div class="label">Digit Margin (<span id="digit_margin_display">15</span>)</div>
+      <div class="label">Screen Margin (<span id="digit_margin_display">15</span>)</div>
       <input type="range" min="4" max="15" value="15" id="digit_margin" oninput="document.getElementById('digit_margin_display').innerText = this.value">
+    </div>
+
+    <div class="input-container">
+      <div class="label">Digit Spacing (<span id="digit_spacing_display">20</span>)</div>
+      <input type="range" min="15" max="25" value="20" id="digit_spacing" oninput="document.getElementById('digit_spacing_display').innerText = this.value">
+    </div>
+
+    <div class="input-container">
+      <div class="label">Corner Radius (<span id="corner_radius_display">15</span>)</div>
+      <input type="range" min="0" max="8" value="4" id="corner_radius" oninput="document.getElementById('corner_radius_display').innerText = this.value">
     </div>
 
     <div class="container target" id="time">
@@ -102,6 +112,8 @@
       var background = document.getElementById("background").value;
       var thickness = document.getElementById("thickness").value;
       var digit_margin = document.getElementById("digit_margin").value;
+      var corner_radius = document.getElementById("corner_radius").value;
+      var digit_spacing = document.getElementById("digit_spacing").value;
 
       if(window.location.hash == "#classic"){
         if(document.getElementById("invert").checked){
@@ -123,23 +135,33 @@
       localStorage.setItem("background" , background);
       localStorage.setItem("thickness", thickness);
       localStorage.setItem("digit_margin", digit_margin);
+      localStorage.setItem("corner_radius", corner_radius);
+      localStorage.setItem("digit_spacing", digit_spacing);
 
       var options = {
         "KEY_FOREGROUND" : parseInt("0x" + foreground),
         "KEY_BACKGROUND" : parseInt("0x" + background),
         "KEY_THICKNESS" : parseInt(thickness),
-        "KEY_DIGIT_MARGIN" : parseInt(digit_margin)
+        "KEY_DIGIT_MARGIN" : parseInt(digit_margin),
+        "KEY_CORNER_RADIUS" : parseInt(corner_radius),
+        "KEY_DIGIT_SPACING" : parseInt(digit_spacing)
       }
 
       return options;
     };
 
     var submitButton = document.getElementById("save_button");
-    submitButton.addEventListener("click",
-    function() {
+    submitButton.addEventListener("click", function() {
       console.log("Submit");
       var options = saveOptions();
+      let pars = new URLSearchParams(new URL(window.location.href).search)
+
       var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(options));
+
+      // for emulator
+      if (pars.has("return_to")) {
+        location = pars.get("return_to") + encodeURIComponent(JSON.stringify(options));
+      }
 
       document.location = location;
     },
@@ -158,7 +180,12 @@
       document.getElementById("background").value = localStorage.getItem("background") ?? "000000";
       document.getElementById("thickness").value = localStorage.getItem("thickness") ?? 15;
       document.getElementById('thickness_display').innerText = document.getElementById("thickness").value;
-      document.getElementById("digit_margin_display").value = localStorage.getItem("digit_margin") ?? 15;
+      document.getElementById("digit_margin").value = localStorage.getItem("digit_margin") ?? 15;
+      document.getElementById("digit_margin_display").innerText = localStorage.getItem("digit_margin") ?? 15;
+      document.getElementById("corner_radius").value = localStorage.getItem("corner_radius") ?? 4;
+      document.getElementById("corner_radius_display").innerText = localStorage.getItem("corner_radius") ?? 4;
+      document.getElementById("digit_spacing").value = localStorage.getItem("digit_spacing") ?? 20;
+      document.getElementById("digit_spacing_display").innerText = localStorage.getItem("digit_spacing") ?? 20;
     });
   </script>
 </body>

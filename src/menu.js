@@ -7,7 +7,7 @@ Pebble.addEventListener("ready",
 Pebble.addEventListener("showConfiguration",
   function(e) {
     // Load the remote config page
-    Pebble.openURL("https://public.richinfante.com/pebble-dimension-config-v2.html");
+    Pebble.openURL("https://public.richinfante.com/dimension-watchface/pebble-dimension-config-v2.6.html");
   }
 );
 
@@ -23,6 +23,8 @@ Pebble.addEventListener("webviewclosed",
    "KEY_BACKGROUND" : configuration.KEY_BACKGROUND,
    "KEY_THICKNESS" : configuration.KEY_THICKNESS,
    "KEY_DIGIT_MARGIN" : configuration.KEY_DIGIT_MARGIN,
+   "KEY_CORNER_RADIUS" : configuration.KEY_CORNER_RADIUS,
+   "KEY_DIGIT_SPACING" : configuration.KEY_DIGIT_SPACING,
    },
       function(e) {
         console.log("Sending settings data...");
