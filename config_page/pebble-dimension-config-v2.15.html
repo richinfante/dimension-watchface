@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dimension Configuration</title>
+  <link rel="stylesheet" href="main.dist.css" />
+  <script src="colormap_custom.js"></script>
+  <template id="colors">
+    <optgroup label="Grayscale">
+      <option value="000000">Black</option>
+      <option value="888888">Dark Gray</option>
+      <option value="AAAAAA">Light Gray</option>
+      <option value="FFFFFF">White</option>
+    </optgroup>
+    <optgroup label="Colors" class="colorsec">
+      <option value="FF0000">Red</option>
+      <option value="FF5500">Orange</option>
+      <option value="FFFF00">Yellow</option>
+      <option value="00FF00">Green</option>
+      <option value="0000FF">Blue</option>
+      <option value="FF00FF">Magenta</option>
+      <option value="00FFFF">Cyan</option>
+      <option value="AA00AA">Purple</option>
+      <option value="AAFFAA">Mint Green</option>
+      <option value="FFAAAA">Melon</option>
+      <option value="FF55FF">Shocking Pink (Crayola)</option>
+      <option value="FF0055">Folly</option>
+      <option value="FF5555">Sunset Orange</option>
+      <option value="555500">Army Green</option>
+      <option value="0000AA">Duke Blue</option>
+      <option value="00AAAA">Tiffany Blue</option>
+      <option value="55FF55">Screamin' Green</option>
+      <option value="FFFFAA">Pastel Yellow</option>
+      <option value="FFAAFF">Rich Brilliant Lavender</option>
+      <option value="55FF00">Bright Green</option>
+      <option value="FF55AA">Brilliant Rose</option>
+      <option value="55AAAA">Cadet Blue</option>
+      <option value="AA5555">Rose Vale</option>
+      <option value="FF00AA">Fashion Magenta</option>
+      <option value="00AA55">Jaeger Green</option>
+      <option value="AAAAFF">Baby Blue Eyes</option>
+      <option value="AA55AA">Purpureus</option>
+      <option value="FFAA00">Chrome Yellow</option>
+      <option value="005500">Dark Green (X11)</option>
+      <option value="5555AA">Liberty</option>
+      <option value="AA00FF">Vivid Violet</option>
+      <option value="FFAA55">Rajah</option>
+      <option value="5500AA">Indigo (Web)</option>
+      <option value="55AA55">May Green</option>
+      <option value="FFFF55">Icterine</option>
+      <option value="550000">Bulgarian Rose</option>
+      <option value="AA5500">Windsor Tan</option>
+      <option value="AA55FF">Lavender Indigo</option>
+      <option value="55FFFF">Electric Blue</option>
+      <option value="0055FF">Blue Moon</option>
+      <option value="55FFAA">Medium Aquamarine</option>
+      <option value="AA0000">Dark Candy Apple Red</option>
+      <option value="AAAA00">Limerick</option>
+      <option value="0055AA">Cobalt Blue</option>
+      <option value="AAFFFF">Celeste</option>
+      <option value="5500FF">Electric Ultramarine</option>
+      <option value="55AAFF">Picton Blue</option>
+      <option value="AAFF55">Inchworm</option>
+      <option value="00AAFF">Vivid Cerulean</option>
+      <option value="55AA00">Kelly Green</option>
+      <option value="00FF55">Malachite</option>
+      <option value="005555">Midnight Green (Eagle Green)</option>
+      <option value="AAFF00">Spring Bud</option>
+      <option value="AA0055">Jazzberry Jam</option>
+      <option value="5555FF">Very Light Blue</option>
+      <option value="00AA00">Islamic Green</option>
+      <option value="000055">Oxford Blue</option>
+      <option value="550055">Imperial Purple</option>
+      <option value="AAAA55">Brass</option>
+      <option value="00FFAA">Medium Spring Green</option>
+    </optgroup>
+  </template>
+</head>
+
+<body class="bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50 p-4">
+  <div class="flex flex-col items-center gap-4 w-full max-w-96 mx-auto bg-slate-100 dark:bg-slate-900 p-4 rounded-lg">
+    <h1 class="text-2xl font-bold pb-2">Dimension Configuration</h1>
+
+    <div class="flex flex-col justify-start items-center gap-2 w-full">
+      <div class="font-bold w-full text-left">Line thickness (<span id="thickness_display">2</span>)</div>
+      <input type="range" min="1" max="15" value="2" id="thickness"
+        oninput="document.getElementById('thickness_display').innerText = this.value" class="w-full">
+    </div>
+
+    <div class="flex flex-col justify-start items-center gap-2 w-full">
+      <div class="font-bold w-full text-left">Screen Margin (<span id="digit_margin_display">8</span>)</div>
+      <input type="range" min="4" max="20" value="8" id="digit_margin"
+        oninput="document.getElementById('digit_margin_display').innerText = this.value" class="w-full">
+    </div>
+
+    <div class="flex flex-col justify-start items-center gap-2 w-full">
+      <div class="font-bold w-full text-left">Digit Spacing (<span id="digit_spacing_display">20</span>)</div>
+      <input type="range" min="10" max="25" value="20" id="digit_spacing"
+        oninput="document.getElementById('digit_spacing_display').innerText = this.value" class="w-full">
+    </div>
+
+    <div class="flex flex-col justify-start items-center gap-2 w-full">
+      <div class="font-bold w-full text-left">Corner Radius (<span id="corner_radius_display">15</span>)</div>
+      <input type="range" min="0" max="8" value="4" id="corner_radius"
+        oninput="document.getElementById('corner_radius_display').innerText = this.value" class="w-full">
+    </div>
+
+    <div class="flex flex-col justify-start items-center gap-2 w-full">
+      <div class="font-bold w-full text-left">Clock Color</div>
+      <select id="foreground" class="border rounded border-slate-500 dark:border-slate-300 p-2 w-full">
+      </select>
+    </div>
+
+    <div class="flex flex-col justify-start items-center gap-2 w-full">
+      <div class="font-bold w-full text-left">Background Color</div>
+      <select id="background" class="border rounded border-slate-500 dark:border-slate-300 p-2 w-full">
+      </select>
+    </div>
+
+    <div class="flex flex-col justify-between items-center gap-2 w-full">
+      <button id="save_button"
+        class="bg-green-500 hover:bg-green-600 text-white rounded p-2 w-full font-black cursor-pointer">Save</button>
+      <button onclick="resetToDefaults()"
+        class="bg-red-400 hover:bg-red-500 cursor-pointer text-white rounded p-2 w-full font-black">Reset to
+        Defaults</button>
+    </div>
+  </div>
+  <script>
+    var colorTemplate = document.querySelector('template').content;
+
+    var fgSelect = document.querySelector('#foreground');
+    fgSelect.appendChild(document.importNode(colorTemplate, true));
+    
+    var bgSelect = document.querySelector('#background');
+    bgSelect.appendChild(document.importNode(colorTemplate, true));
+
+    // Setup to allow easy adding more options later
+    function saveOptions() {
+
+      var foreground = document.getElementById("foreground").value;
+      var background = document.getElementById("background").value;
+      var thickness = document.getElementById("thickness").value;
+      var digit_margin = document.getElementById("digit_margin").value;
+      var corner_radius = document.getElementById("corner_radius").value;
+      var digit_spacing = document.getElementById("digit_spacing").value;
+
+      localStorage.setItem("foreground", foreground);
+      localStorage.setItem("background", background);
+      localStorage.setItem("thickness", thickness);
+      localStorage.setItem("digit_margin", digit_margin);
+      localStorage.setItem("corner_radius", corner_radius);
+      localStorage.setItem("digit_spacing", digit_spacing);
+
+      var options = {
+        "KEY_FOREGROUND": parseInt("0x" + foreground),
+        "KEY_BACKGROUND": parseInt("0x" + background),
+        "KEY_THICKNESS": parseInt(thickness),
+        "KEY_DIGIT_MARGIN": parseInt(digit_margin),
+        "KEY_CORNER_RADIUS": parseInt(corner_radius),
+        "KEY_DIGIT_SPACING": parseInt(digit_spacing)
+      }
+
+      return options;
+    };
+
+    var submitButton = document.getElementById("save_button");
+    submitButton.addEventListener("click", function () {
+      console.log("Submit");
+      var options = saveOptions();
+      let pars = new URLSearchParams(new URL(window.location.href).search)
+
+      var location = "pebblejs://close#" + encodeURIComponent(JSON.stringify(options));
+
+      // for emulator
+      if (pars.has("return_to")) {
+        location = pars.get("return_to") + encodeURIComponent(JSON.stringify(options));
+      }
+
+      document.location = location;
+    },
+      false);
+
+    function resetToDefaults() {
+      localStorage.clear()
+      resetUIToStoredValues()
+    }
+
+    function resetUIToStoredValues() {
+      document.getElementById("foreground").value = localStorage.getItem("foreground") ?? "FFFFFF";
+      document.getElementById("background").value = localStorage.getItem("background") ?? "000000";
+      document.getElementById("thickness").value = localStorage.getItem("thickness") ?? 15;
+      document.getElementById('thickness_display').innerText = document.getElementById("thickness").value;
+      document.getElementById("digit_margin").value = localStorage.getItem("digit_margin") ?? 8;
+      document.getElementById("digit_margin_display").innerText = document.getElementById("digit_margin").value
+      document.getElementById("corner_radius").value = localStorage.getItem("corner_radius") ?? 4;
+      document.getElementById("corner_radius_display").innerText = document.getElementById("corner_radius").value
+      document.getElementById("digit_spacing").value = localStorage.getItem("digit_spacing") ?? 15;
+      document.getElementById("digit_spacing_display").innerText = document.getElementById("digit_spacing").value
+    }
+
+    window.addEventListener("DOMContentLoaded", function () {
+      resetUIToStoredValues()
+    });
+  </script>
+</body>
+
+</html>

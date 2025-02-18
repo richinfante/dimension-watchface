@@ -1,4 +1,5 @@
 #include <pebble.h>
+//#define ALPHANUM
 #include "main.h"
 
 //#define SDK_3_0 //Enable SDK 3.0 Compatibility
@@ -17,10 +18,10 @@
 #define STORAGE_VERSION_V1 1
 #define STORAGE_VERSION_V2 2
 
-#define DEFAULT_THICKNESS 12
-#define DEFAULT_DIGIT_MARGIN 15
-#define DEFAULT_DIGIT_SPACING 20
-#define DEFAULT_CORNER_RADIUS 2
+#define DEFAULT_THICKNESS 15
+#define DEFAULT_DIGIT_MARGIN 8
+#define DEFAULT_DIGIT_SPACING 15
+#define DEFAULT_CORNER_RADIUS 4
 #define DEFAULT_FG_COLOR 0xFFFFFF
 #define DEFAULT_BG_COLOR 0x000000
 
@@ -44,49 +45,39 @@ int hour = 0;
 int sec = 0;
 
 // #define SEGMENT_DEBUG 1
-// #define DEBUG 1
+//#define DEBUG 1
 
-bool * get_second_letter(int num){
-  #ifdef TEST_MODE
-    if(num%2 == 0){
-    return test;
-  }else{
-    return test2;
+int get_second_letter(int num){
+  return alphabet[num % 10];
+}
+
+int get_first_letter(int num){
+  return alphabet[num / 10];
+}
+
+int letter_from_char(char c) {
+  #ifdef ALPHANUM
+  if (c >= 0x41 && c <= 0x41 + 25) {
+    return abcs[c - 0x41];
+  }
+
+  if (c >= 0x61 && c <= 0x61 + 25) {
+    return abcs[c - 0x61];
   }
   #endif
 
-  num = num % 10;
-  switch(num) {
-    case 0:
-      return zero;
-    case 1:
-      return one;
-    case 2:
-      return two;
-    case 3:
-      return three;
-    case 4:
-      return four;
-    case 5:
-      return five;
-    case 6:
-      return six;
-    case 7:
-      return seven;
-    case 8:
-      return eight;
-    case 9:
-      return nine;
-    default:
-      return dash;
+  if (c >= 0x30 && c <= 0x30 + 9) {
+    return alphabet[c - 0x30];
   }
+
+  if (c == 45) {
+    return DIGIT_DASH;
+  }
+
+  return DIGIT_DASH;
 }
 
-bool * get_first_letter(int num){
-  return get_second_letter((int) (num / 10));
-}
-
-static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * ctx){
+static void draw_letter(int letter, int stroke_width, GRect rect, GContext * ctx){
   graphics_context_set_stroke_color(ctx, clockColor);
   graphics_context_set_fill_color(ctx, clockColor);
 
@@ -116,16 +107,54 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   #ifdef DEBUG
     APP_LOG(APP_LOG_LEVEL_INFO, "using draw settings sw=%d, cr=%d, ecr=%d, w=%d, h=%d", stroke_width, corner_radius, effective_corner_rad, w, h);
   #endif
+  
+  #ifdef ALPHANUM
+    graphics_context_set_antialiased(ctx, false);
+    
+    int diag_offset = 0.7071067811865476 * stroke_width;
+    if (diag_offset < 1) { diag_offset = 1; }
+
+    if (letter & SPECIAL_TLDESC_DIAG) {
+      GPathInfo tldesc_shape = {
+        .num_points = 6,
+        .points = (GPoint []) {
+          {x, y-diag_offset},
+          {x, y}, 
+          {x+diag_offset, y},
+          {x + w/2, y + h/2 - diag_offset},
+          {x + w/2, y + h/2},
+          {x + w/2 + diag_offset, y + h/2}
+        }
+      };
+      
+      GPath *tldesc_ptr = gpath_create(&tldesc_shape);
+      gpath_draw_filled(ctx, tldesc_ptr);
+      gpath_destroy(tldesc_ptr);
+    }
+    
+    if (letter & SPECIAL_BRDESC_DIAG) {
+      GPathInfo brdesc_path = {
+        .num_points = 4,
+        .points = (GPoint []) {{x+w/2, y+h/2 - stroke_width}, {x + w - stroke_width, y+h-stroke_width*2}, {x+w - stroke_width, y+h}, {x+w/2, y+h/2 + stroke_width}}
+      };
+      
+      GPath *brdesc_ptr = gpath_create(&brdesc_path);
+      gpath_draw_filled(ctx, brdesc_ptr);
+      gpath_destroy(brdesc_ptr);
+    }
+  #endif
+  
+  // SEGMENT() macro returns a bitmask for the defined bit
 
   // Top 2
-  if(letter[0] == true){
+  if(letter & SEGMENT(0)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorRed);
     #endif
 
     graphics_fill_rect(ctx, GRect(x, y, w/2 , stroke_width), effective_corner_rad, effective_corner_rad == 0 ? GCornerNone : GCornerTopLeft);
   }
-  if(letter[1] == true) {
+  if(letter & SEGMENT(1)) {
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorOrange);
     #endif
@@ -133,7 +162,7 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   }
 
   //First 2 Sides
-  if(letter[2] == true){
+  if(letter & SEGMENT(2)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorYellow);
     #endif
@@ -141,13 +170,13 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   }
 
   // Middle Side
-  if(letter[3] == true) {
+  if(letter & SEGMENT(3)) {
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorGreen);
     #endif
     graphics_fill_rect(ctx, GRect(x+w/2 - stroke_width / 2, y, stroke_width , h/4), 0, GCornerNone);
   }
-  if(letter[4] == true) {
+  if(letter & SEGMENT(4)) {
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorBlue);
     #endif
@@ -155,21 +184,21 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   }
 
   //Second 2 Sides
-  if(letter[5] == true){
+  if(letter & SEGMENT(5)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorIndigo);
     #endif
     graphics_fill_rect(ctx, GRect(x, y+h/4, stroke_width , h/4), 0, GCornerNone);
   }
 
-  if(letter[6] == true) {
+  if(letter & SEGMENT(6)) {
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorPurple);
     #endif
     graphics_fill_rect(ctx, GRect(x+w/2 - stroke_width/2, y+h/4, stroke_width , h/4), 0, GCornerNone);
   }
 
-  if(letter[7] == true) {
+  if(letter & SEGMENT(7)) {
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorLightGray);
     #endif
@@ -177,14 +206,14 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   }
 
   // Middle 2
-  if(letter[8] == true){
+  if(letter & SEGMENT(8)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorDarkGray);
     #endif
     graphics_fill_rect(ctx, GRect(x, y+h/2 - stroke_width / 2, w/2 , stroke_width), 0, GCornerNone);
   }
 
-  if(letter[9] == true) {
+  if(letter & SEGMENT(9)) {
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorBlack);
     #endif
@@ -192,21 +221,21 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   }
 
   //Third 2 Sides
-  if(letter[10] == true){
+  if(letter & SEGMENT(10)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorRed);
     #endif
     graphics_fill_rect(ctx, GRect(x, y+h/2, stroke_width , h/4), 0, GCornerNone);
   }
 
-  if(letter[11] == true){
+  if(letter & SEGMENT(11)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorOrange);
     #endif
     graphics_fill_rect(ctx, GRect(x+w/2 - stroke_width/2, y+h/2, stroke_width , h/4), 0, GCornerNone);
   }
 
-  if(letter[12] == true){
+  if(letter & SEGMENT(12)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorYellow);
     #endif
@@ -214,19 +243,19 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   }
 
   // Last 2 Sides
-  if(letter[13] == true){
+  if(letter & SEGMENT(13)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorGreen);
     #endif
     graphics_fill_rect(ctx, GRect(x, y+h/4*3, stroke_width , h/4), effective_corner_rad, effective_corner_rad == 0 ? GCornerNone : GCornerBottomLeft);
   }
-  if(letter[14] == true){
+  if(letter & SEGMENT(14)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorBlue);
     #endif
     graphics_fill_rect(ctx, GRect(x+w/2 - stroke_width/2, y+h/4*3, stroke_width , h/4), 0, GCornerNone);
   }
-  if(letter[15] == true){
+  if(letter & SEGMENT(15)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorIndigo);
     #endif
@@ -234,13 +263,13 @@ static void draw_letter(bool * letter, int stroke_width, GRect rect, GContext * 
   }
 
   // Bottom 2
-  if(letter[16] == true){
+  if(letter & SEGMENT(16)){
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorPurple);
     #endif
     graphics_fill_rect(ctx, GRect(x, y + h - stroke_width, w/2 , stroke_width), effective_corner_rad, effective_corner_rad == 0 ? GCornerNone : GCornerBottomLeft);
   }
-  if(letter[17] == true) {
+  if(letter & SEGMENT(17)) {
     #ifdef SEGMENT_DEBUG
       graphics_context_set_fill_color(ctx, GColorLightGray);
     #endif
@@ -280,13 +309,23 @@ static void update_clock(Layer *this_layer, GContext *ctx) {
   );
 
   #ifdef DEBUG
-    APP_LOG(APP_LOG_LEVEL_INFO, "letter_w: %d, letter_h: %d", letter_w, letter_h);
+    APP_LOG(APP_LOG_LEVEL_INFO, "letter_w: %d, letter_h: %d, hour: %d, minute: %d, fh: %d, sh: %d, fm: %d, sm: %d", letter_w, letter_h, hour, min, get_first_letter(hour), get_second_letter(hour), get_first_letter(min), get_second_letter(min));
   #endif
 
   draw_letter(get_first_letter(hour), clock_stroke, topLeft, ctx);
   draw_letter(get_second_letter(hour), clock_stroke, topRight, ctx);
   draw_letter(get_first_letter(min), clock_stroke, bottomLeft, ctx);
   draw_letter(get_second_letter(min), clock_stroke, bottomRight, ctx);
+
+  // graphics_context_set_fill_color(ctx, GColorRed);
+  // int xfs = 16;
+  // int yfs = 22;
+  // for (int x = 0; x < 5; x++) {
+  //   for (int y = 0; y < 5; y++) {
+  //     int letter = letter_from_char(0x41 + x + 5 * y);
+  //     draw_letter(letter, 2, GRect(5 + (xfs+2) * x, 5 + (yfs+2) * y, xfs, yfs), ctx);
+  //   }
+  // }
 
  // if(useSeconds){
   //  graphics_fill_rect(ctx, GRect(0, device_height, device_width * sec / 60, -4), 0, GCornerNone);
@@ -441,11 +480,16 @@ void handle_init(void) {
   clock_stroke = persist_read_int(KEY_THICKNESS);
   corner_radius = persist_read_int(KEY_CORNER_RADIUS);
   inner_margin = persist_read_int(KEY_DIGIT_SPACING);
+  margin = persist_read_int(KEY_DIGIT_MARGIN);
+  
+  if (inner_margin < 10) {
+    inner_margin = DEFAULT_DIGIT_SPACING; 
+  }
 
   #ifdef PBL_ROUND
-    margin = 28;
-  #else
-    margin = persist_read_int(KEY_DIGIT_MARGIN);
+    if (margin < 32) {
+      margin = 32;
+    }
   #endif
 
   APP_LOG(APP_LOG_LEVEL_INFO, "Config: color: %d, bg: %d, stroke: %d, margin: %d, corner rad: %d",color, background, clock_stroke, margin, corner_radius);

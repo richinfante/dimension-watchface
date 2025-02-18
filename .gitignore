@@ -2,3 +2,6 @@
 build/
 .lock-*
 build.zip
+pebble_screenshot*
+node_modules
+*.dist.css

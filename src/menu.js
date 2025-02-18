@@ -7,7 +7,7 @@ Pebble.addEventListener("ready",
 Pebble.addEventListener("showConfiguration",
   function(e) {
     // Load the remote config page
-    Pebble.openURL("https://public.richinfante.com/dimension-watchface/pebble-dimension-config-v2.6.html");
+    Pebble.openURL("https://public.richinfante.com/dimension-watchface/pebble-dimension-config-v2.15.html");
   }
 );
 
