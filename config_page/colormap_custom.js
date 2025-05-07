@@ -1,6 +1,6 @@
 // SRC: https://developer.rebble.io/developer.pebble.com/assets/js/tools/color-dict.js
 var COLOR_PICKER_COLORS = {
-  "#000000": {
+  /*"#000000": {
     "dist": 0.0,
     "closest": {
       "url": "http://en.wikipedia.org/wiki/Black",
@@ -207,7 +207,7 @@ var COLOR_PICKER_COLORS = {
     "html": "#AAAAAA",
     "r": 170,
     "identifier": "LightGray"
-  },
+  },*/
   "#AAFFAA": {
     "dist": 25.45584412271571,
     "closest": {

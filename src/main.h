@@ -1,133 +1,117 @@
 #include <pebble.h>
- 
-bool one[] = {
-   1, 0,
- 0, 1, 0,
- 0, 1, 0,
-   0, 0,
- 0, 1, 0,
- 0, 1, 0,
-   1, 1,
+
+/*
+  DIGIT MAP
+
+  0 1
+ 2 3 4
+ 5 6 7
+  8 9
+ A B C    (10, 11, 12)
+ D E F    (13, 14, 15)
+  G H     (16, 17)
+
+*/
+
+#define SEGMENT(x) (1<<(17-x))
+#define ALPHABET_SIZE ARRAY_LENGTH(alphabet)
+
+/* LAYOUT       0123456789ABCDEFGH */
+#define DIGIT_1 0b100100100001001011
+#define DIGIT_2 0b110010011110010011
+#define DIGIT_3 0b111010010100110111
+#define DIGIT_4 0b001011011100100100
+#define DIGIT_5 0b111001001100110111
+#define DIGIT_6 0b111011001110110111
+#define DIGIT_7 0b111010010000100100
+#define DIGIT_8 0b111011011110110111
+#define DIGIT_9 0b111011011100110111
+#define DIGIT_0 0b111011010010110111
+#define DIGIT_DASH 0b000000001100000000
+
+
+int alphabet[] = {
+  DIGIT_0,
+  DIGIT_1,
+  DIGIT_2,
+  DIGIT_3,
+  DIGIT_4,
+  DIGIT_5,
+  DIGIT_6,
+  DIGIT_7,
+  DIGIT_8,
+  DIGIT_9,
+  DIGIT_DASH
 };
 
-bool two[] = {
-   1, 1,
- 0, 0, 1,
- 0, 0, 1,
-   1, 1,
- 1, 0, 0,
- 1, 0, 0,
-   1, 1,
+#ifdef ALPHANUM
+#define EXTENDED_SEG(x) (1<<(18+x))
+#define FULL_DRAW 0xFFFFFFFF
+
+#define SPECIAL_TLDESC_DIAG EXTENDED_SEG(0)
+#define SPECIAL_TRASC_DIAG EXTENDED_SEG(1)
+#define SPECIAL_BLASC_DIAG EXTENDED_SEG(2)
+#define SPECIAL_BRDESC_DIAG EXTENDED_SEG(4)
+#define SPECIAL_TLASC_DIAG EXTENDED_SEG(5)
+#define SPECIAL_TRDESC_DIAG EXTENDED_SEG(5)
+#define SPECIAL_BLDESC_DIAG EXTENDED_SEG(7)
+#define SPECIAL_BRASC_DIAG EXTENDED_SEG(7)
+
+#define LETTER_A 0b111011011110110100
+#define LETTER_B 0b001001001110110111
+#define LETTER_C 0b111001000010010011
+#define LETTER_D 0b000010011110110111
+#define LETTER_E 0b111001001010010011
+#define LETTER_F 0b111001001110010000
+#define LETTER_G 0b111001100110110111
+#define LETTER_H 0b001011011110110100
+#define LETTER_I 0b110100100001001011
+#define LETTER_J 0b110100100001011010
+#define LETTER_K 0b001001000010010000 | SPECIAL_BLDESC_DIAG | SPECIAL_TLASC_DIAG
+#define LETTER_L 0b001001000010010011
+#define LETTER_M 0b111111110010110100
+#define LETTER_N 0b001011010010110100 | SPECIAL_TLDESC_DIAG | SPECIAL_BRDESC_DIAG
+#define LETTER_O 0b111011010010110111
+#define LETTER_P 0b111011011110010000
+#define LETTER_Q 0b101101101001001101
+#define LETTER_R 0b111011011110010000 | SPECIAL_BRDESC_DIAG
+#define LETTER_S 0b111001001100100111
+#define LETTER_T 0b110100100001001000
+#define LETTER_U 0b001011010010110111
+#define LETTER_V 0b001011010000000000 | SPECIAL_BLDESC_DIAG | SPECIAL_BRASC_DIAG
+#define LETTER_W 0b001011010010110100 | SPECIAL_BLASC_DIAG | SPECIAL_BRDESC_DIAG
+#define LETTER_X 0b0 | SPECIAL_TLDESC_DIAG | SPECIAL_TRASC_DIAG | SPECIAL_BLASC_DIAG | SPECIAL_BRDESC_DIAG
+#define LETTER_Y 0b001011011100100111
+#define LETTER_Z 0b110000000000000011 | SPECIAL_TRASC_DIAG | SPECIAL_BLASC_DIAG
+
+int abcs[] = {
+  LETTER_A,
+  LETTER_B,
+  LETTER_C,
+  LETTER_D,
+  LETTER_E,
+  LETTER_F,
+  LETTER_G,
+  LETTER_H,
+  LETTER_I,
+  LETTER_J,
+  LETTER_K,
+  LETTER_L,
+  LETTER_M,
+  LETTER_N,
+  LETTER_O,
+  LETTER_P,
+  LETTER_Q,
+  LETTER_R,
+  LETTER_S,
+  LETTER_T,
+  LETTER_U,
+  LETTER_V,
+  LETTER_W,
+  LETTER_X,
+  LETTER_Y,
+  LETTER_Z
 };
 
-bool three[] = {
-   1, 1,
- 1, 0, 1,
- 0, 0, 1,
-   0, 1,
- 0, 0, 1,
- 1, 0, 1,
-   1, 1,
-};
+#endif
 
-bool four[] = {
-   0, 0,
- 1, 0, 1,
- 1, 0, 1,
-   1, 1,
- 0, 0, 1,
- 0, 0, 1,
-   0, 0,
-};
-
-bool five[] = {
-   1, 1,
- 1, 0, 0,
- 1, 0, 0,
-   1, 1,
- 0, 0, 1,
- 1, 0, 1,
-   1, 1,
-};
-
-
-bool six[] = {
-   1, 1,
- 1, 0, 1,
- 1, 0, 0,
-   1, 1,
- 1, 0, 1,
- 1, 0, 1,
-   1, 1,
-};
-
-bool seven[] = {
-   1, 1,
- 1, 0, 1,
- 0, 0, 1,
-   0, 0,
- 0, 0, 1,
- 0, 0, 1,
-   0, 0,
-};
-
-bool eight[] = {
-   1, 1,
- 1, 0, 1,
- 1, 0, 1,
-   1, 1,
- 1, 0, 1,
- 1, 0, 1,
-   1, 1,
-};
-
-bool nine[] = {
-   1, 1,
- 1, 0, 1,
- 1, 0, 1,
-   1, 1,
- 0, 0, 1,
- 1, 0, 1,
-   1, 1,
-};
-
-bool zero[] = {
-   1, 1,
- 1, 0, 1,
- 1, 0, 1,
-   0, 0,
- 1, 0, 1,
- 1, 0, 1,
-   1, 1,
-};
-
-
-bool dash[] = {
-   0, 0,
- 0, 0, 0,
- 0, 0, 0,
-   1, 1,
- 0, 0, 0,
- 0, 0, 0,
-   0, 0,
-};
-
-bool test[] = {
-   1, 0,
- 0, 1, 1,
- 1, 0, 0,
-   0, 1,
- 1, 1, 0,
- 0, 0, 1,
-   1, 0,
-};
-
-bool test2[] = {
-   0, 1,
- 1, 0, 0,
- 0, 1, 1,
-   1, 0,
- 0, 0, 1,
- 1, 1, 0,
-   0, 1,
-};
